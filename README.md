@@ -19,11 +19,15 @@ depends :
 
 =====================
 
-modified by Napiophelios :
+modifications :
 - new textures
 - new nodeboxes
 - animated flames
 - new nodes
+
+=====================
+
+![Preview](https://raw.githubusercontent.com/Napiophelios/candles_experiment/master/screenshot.png)
 
 =====================
 
@@ -32,4 +36,3 @@ Textures by Napiophelios
 License: CC-BY-SA 3.0
 
 =====================
-![Preview](https://raw.githubusercontent.com/Napiophelios/candles_experiment/master/screenshot.png)
