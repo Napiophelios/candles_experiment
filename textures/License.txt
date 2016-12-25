@@ -1,5 +1,8 @@
 --========================
 
+Original "candles_hive_dandelion.png" from Flowers mod
+License: CC-BY-SA 3.0   ???
+
 Original Textures by Philipner ???
 License: MIT ???
 - candles_candelabra_flame.png
@@ -57,19 +60,29 @@ License: CC-BY-SA 3.0
 - candles_candle_steel_bottom.png
 - candles_candle_steel_lit.png
 - candles_candle_steel_top.png
-- candles_comb.png
+- candles_candle_top.png
 - candles_hive.png
+- candles_hive_bee.png
 - candles_hive_bottom.png
+- candles_hive_busybees.png
+- candles_hive_dandelion.png
 - candles_hive_empty.png
 - candles_hive_empty_bottom.png
 - candles_hive_empty_front.png
 - candles_hive_empty_top.png
 - candles_hive_front.png
+- candles_hive_layout.png
 - candles_hive_top.png
 - candles_hive_wild.png
 - candles_honey.png
 - candles_honey_bottled.png
-- candles_honeycomb_block.png
+- candles_honey_comb.png
+- candles_honey_comb_block.png
+- candles_honey_jar.png
+- candles_honey_jar_bottom.png
+- candles_honey_jar_inv.png
+- candles_honey_jar_top.png
+- candles_invisible.png
 - candles_wax.png
 
 --========================

@@ -1,167 +1,170 @@
-
 --[[
+--==========================================
 -- Candles mod by darkrose
 -- Copyright (C) Lisa Milne 2013 <lisa@ltmnet.com>
 -- Code: GPL version 2
 -- http://www.gnu.org/licenses/>
+--==========================================
+--Artificial Hive node functions and formspec from xdecor mod
+--Copyright (c) 2015-2016 kilbith <jeanpatrick.guerrero@gmail.com>
+--Code: GPL version 3
+--==========================================
 --]]
 
-screwdriver = screwdriver or {}
+local hive = {}
 
-local candles = {};
+local honey_max = 16
 
-candles.collect = function(pos, node, puncher)
-	local meta = minetest.env:get_meta(pos)
-	local angry = meta:get_string('angry')
-	local comb = meta:get_int('comb')
-	if ( angry and angry == 'true' ) or comb < 1 then
-		local health = puncher:get_hp()
-		puncher:set_hp(health-2)
-	else
-		comb = comb-1
-		meta:set_int('comb',comb)
-		puncher:get_inventory():add_item('main', 'candles:comb')
-	end
-	if comb < 1 then
-		meta:set_string('angry','true')
-	end
-	if node.name == 'candles:hive' then
-		if comb < 1 then
-			meta:set_string('infotext','Bee Hive: Angry')
-		else
-			meta:set_string('infotext','Bee Hive: Busy');
-		end
-	end
-	local tmr = minetest.env:get_node_timer(pos)
-	tmr:start(300)
+function hive.construct(pos)
+	local meta = minetest.get_meta(pos)
+	local inv = meta:get_inventory()
+
+	local formspec = [[ size[8,5;]
+			label[0.5,0;Bees are busy making honey...]
+			image[7,0;1,1;candles_hive_bee.png]
+            image[6,0;1,1;candles_hive_dandelion.png]
+			image[5,0;1,1;candles_hive_layout.png]
+			list[context;honey;5,0;1,1;]
+			list[current_player;main;0,1.35;8,4;] ]]
+            ..default.gui_bg
+            ..default.gui_bg_img
+            ..default.gui_slots
+			..default.get_hotbar_bg(0,1.35)
+
+	meta:set_string("formspec", formspec)
+	meta:set_string("infotext", "Artificial Hive")
+	inv:set_size("honey", 1)
+
+	local timer = minetest.get_node_timer(pos)
+	timer:start(math.random(64, 128))
 end
 
+function hive.timer(pos)
+	local time = (minetest.get_timeofday() or 0) * 24000
+	if time < 5500 or time > 18500 then return true end
+
+	local inv = minetest.get_meta(pos):get_inventory()
+	local honeystack = inv:get_stack("honey", 1)
+	local honey = honeystack:get_count()
+
+	local radius = 4
+	local minp = vector.add(pos, -radius)
+	local maxp = vector.add(pos, radius)
+	local flowers = minetest.find_nodes_in_area_under_air(minp, maxp, "group:flower")
+
+	if #flowers > 2 and honey < honey_max then
+		inv:add_item("honey", "candles:honey")
+	elseif honey == honey_max then
+		local timer = minetest.get_node_timer(pos)
+		timer:stop() return true
+	end
+	return true
+end
+
+--------------------
+-- Register Nodes
+--------------------
+--Natural Beehive
 minetest.register_node("candles:hive_wild", {
-	description = "Wild Bee Hive",
-	tile_images = {"candles_hive_wild.png"},
+	description = "Beehive",
 	drawtype = "plantlike",
+	--visual_scale = 0.5,
+	tiles = {"candles_hive_wild.png"},
+	inventory_image = "candles_hive_wild.png",
 	paramtype = "light",
-	paramtype2 = 'wallmounted',
-	groups = {attached_node=1},
-	on_punch = candles.collect,
-	can_dig = function(pos,player)
-		return false
-	end,
-	on_place = function(itemstack, placer, pointed_thing)
-		minetest.env:add_node(pointed_thing.above, {name = itemstack:get_name(), param2 = 0})
-		itemstack:take_item()
-		return itemstack
-	end,
-	after_place_node = function(pos, placer, itemstack)
+	sunlight_propagates = true,
+	walkable = true,
+	groups = {snappy = 3, oddly_breakable_by_hand = 2, flammable = 1, not_in_creative_inventory=1},
+    sounds = default.node_sound_leaves_defaults(),
+	drop = "candles:honey 2",
+	drop = {
+		max_items = 1,
+		items = {
+			{items = {"candles:comb"}, rarity = 5},
+			{items = {"candles:honey 2"}}
+		}
+	},
+    after_place_node = function(pos, placer, itemstack)
     if minetest.get_modpath( "mobs") then
-         if math.random(1, 4) == 1 then
+         if math.random(1, 6) == 1 then
           minetest.add_entity(pos, "mobs_animal:bee")
         end
     else
    end
 	end,
-	on_timer = function(pos,elapsed)
-		local meta = minetest.env:get_meta(pos)
-		local angry = meta:get_string('angry')
-		if angry and angry == 'true' then
-			meta:set_string('angry','')
-			meta:set_int('comb',1)
-		else
-			local c = meta:get_int('comb')
-			if c == 3 then
-				minetest.env:add_node(pos,{name='default:apple'})
-				return false
-			elseif c == 0 then
-				meta:set_string('angry','true')
-			else
-				meta:set_int('comb',c+1)
-			end
-		end
-		return true
+	on_punch = function(_, _, puncher, _)
+		local health = puncher:get_hp()
+		puncher:set_hp(health - 1)
 	end,
-	on_construct = function(pos)
-		local tmr = minetest.env:get_node_timer(pos)
-		local meta = minetest.env:get_meta(pos)
-		meta:set_string('angry','true')
-		tmr:start(300)
-	end
+	on_rightclick = function(_, _, clicker)
+		local health = clicker:get_hp()
+		clicker:set_hp(health - 1)
+	end,
 })
-
+--Artificial Hive
 minetest.register_node("candles:hive", {
-	description = "Bee Hive",
-	tile_images = {"candles_hive_top.png", "candles_hive_bottom.png",
-	"candles_hive.png", "candles_hive.png",
-	"candles_hive.png", "candles_hive_front.png"},
-	drawtype = "nodebox",
+	description = "Artificial Hive",
+    tile_images = {"candles_hive_top.png","candles_hive_bottom.png",
+    "candles_hive.png","candles_hive.png",
+    "candles_hive.png","candles_hive_front.png"},
+    drawtype = "nodebox",
 	paramtype = "light",
 	paramtype2 = "facedir",
 	place_param2 = 0,
 	on_rotate = screwdriver.rotate_simple,
-	groups = {snappy=1,choppy=2,oddly_breakable_by_hand=2,flammable=3,wood=1},
+	groups = {snappy=1,choppy=2,oddly_breakable_by_hand=2,flammable=3,wood=1, not_in_creative_inventory=1},
 	sounds = default.node_sound_wood_defaults(),
-	on_punch = candles.collect,
 	node_box = {
 		type = "fixed",
 		fixed = {
-                {-0.375, 0, -0.375, 0.375, 0.5, 0.375},
-                {-0.4375, 0.375, -0.4375, 0.4375, 0.4375, 0.4375},
-                {-0.4375, -0.0625, -0.4375, 0.4375, 0, 0.4375},
-                {-0.4375, -0.5, 0.375, -0.375, 0.4375, 0.4375},
-                {0.375, -0.5, 0.375, 0.4375, 0.4375, 0.4375},
-                {-0.4375, -0.5, -0.375, 0.4375, -0.0625, 0.4375},
-                {-0.4375, -0.5, -0.4375, 0.4375, -0.4375, 0.4375},
-                {-0.4375, -0.5, -0.4375, -0.375, 0.375, -0.375},
-                {0.375, -0.5, -0.4375, 0.4375, 0.4375, -0.375},
-                {-0.125, -0.3125, -0.4375, 0.125, -0.1875, -0.3125},--knob
-            },
+			{-0.375, 0, -0.375, 0.375, 0.5, 0.375},
+			{-0.4375, 0.375, -0.4375, 0.4375, 0.4375, 0.4375},
+			{-0.4375, -0.0625, -0.4375, 0.4375, 0, 0.4375},
+			{-0.4375, -0.5, 0.375, -0.375, 0.4375, 0.4375},
+			{0.375, -0.5, 0.375, 0.4375, 0.4375, 0.4375},
+			{-0.4375, -0.5, -0.375, 0.4375, -0.0625, 0.4375},
+			{-0.4375, -0.5, -0.4375, 0.4375, -0.4375, 0.4375},
+			{-0.4375, -0.5, -0.4375, -0.375, 0.375, -0.375},
+			{0.375, -0.5, -0.4375, 0.4375, 0.4375, -0.375},
+            {-0.125, -0.3125, -0.4375, 0.125, -0.1875, -0.3125},--knob
 		},
+    },
 	selection_box = {
 		type = "fixed",
 		fixed = {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
 	},
-	after_place_node = function(pos, placer, itemstack)
+    after_place_node = function(pos, placer, itemstack)
     if minetest.get_modpath( "mobs") then
-         if math.random(1, 4) == 1 then
+         if math.random(1, 12) == 1 then
           minetest.add_entity(pos, "mobs_animal:bee")
         end
     else
    end
 	end,
-	on_timer = function(pos,elapsed)
-		local meta = minetest.env:get_meta(pos)
-		local angry = meta:get_string('angry')
-		if angry and angry == 'true' then
-			meta:set_string('angry','')
-			meta:set_string('infotext','Bee Hive: Busy');
-			meta:set_int('comb',1)
-		else
-			local c = meta:get_int('comb')
-			if c == 0 then
-				meta:set_string('angry','true')
-				meta:set_string('infotext','Bee Hive: Angry');
-			else
-				meta:set_int('comb',c+2)
-				meta:set_string('infotext','Bee Hive: Busy');
-			end
-		end
-		return true
+	on_construct = hive.construct,
+	on_timer = hive.timer,
+	can_dig = function(pos)
+		local inv = minetest.get_meta(pos):get_inventory()
+		return inv:is_empty("honey")
 	end,
-	on_construct = function(pos)
-		local tmr = minetest.env:get_node_timer(pos)
-		local meta = minetest.env:get_meta(pos)
-		meta:set_string('angry','true')
-		meta:set_string('infotext','Bee Hive: Angry');
-		tmr:start(300)
+	on_punch = function(_, _, puncher)
+		puncher:set_hp(puncher:get_hp() - 1)
+	end,
+	allow_metadata_inventory_put = function() return 0 end,
+	on_metadata_inventory_take = function(pos, _, _, stack)
+		if stack:get_count() == honey_max then
+			local timer = minetest.get_node_timer(pos)
+			timer:start(math.random(64, 128))
+		end
 	end
 })
 
 minetest.register_node("candles:hive_empty", {
-	description = "Bee Hive",
- tile_images = {"candles_hive_empty_top.png",
- "candles_hive_empty_bottom.png",
- "candles_hive_empty.png", "candles_hive_empty.png",
- "candles_hive_empty.png", "candles_hive_empty_front.png"},
- drawtype = "nodebox",
+	description = "Artificial Hive (empty)",
+    tile_images = {"candles_hive_empty_top.png","candles_hive_empty_bottom.png",
+    "candles_hive_empty.png","candles_hive_empty.png",
+    "candles_hive_empty.png","candles_hive_empty_front.png"},
+    drawtype = "nodebox",
 	paramtype = "light",
 	paramtype2 = "facedir",
 	place_param2 = 0,
@@ -171,25 +174,25 @@ minetest.register_node("candles:hive_empty", {
 	node_box = {
 		type = "fixed",
 		fixed = {
-                {-0.375, 0, -0.375, 0.375, 0.5, 0.375},
-                {-0.4375, 0.375, -0.4375, 0.4375, 0.4375, 0.4375},
-                {-0.4375, -0.0625, -0.4375, 0.4375, 0, 0.4375},
-                {-0.4375, -0.5, 0.375, -0.375, 0.4375, 0.4375},
-                {0.375, -0.5, 0.375, 0.4375, 0.4375, 0.4375},
-                {-0.4375, -0.5, -0.375, 0.4375, -0.0625, 0.4375},
-                {-0.4375, -0.5, -0.4375, 0.4375, -0.4375, 0.4375},
-                {-0.4375, -0.5, -0.4375, -0.375, 0.375, -0.375},
-                {0.375, -0.5, -0.4375, 0.4375, 0.4375, -0.375},
-                {-0.125, -0.3125, -0.4375, 0.125, -0.1875, -0.3125},--knob
-            },
+			{-0.375, 0, -0.375, 0.375, 0.5, 0.375},
+			{-0.4375, 0.375, -0.4375, 0.4375, 0.4375, 0.4375},
+			{-0.4375, -0.0625, -0.4375, 0.4375, 0, 0.4375},
+			{-0.4375, -0.5, 0.375, -0.375, 0.4375, 0.4375},
+			{0.375, -0.5, 0.375, 0.4375, 0.4375, 0.4375},
+			{-0.4375, -0.5, -0.375, 0.4375, -0.0625, 0.4375},
+			{-0.4375, -0.5, -0.4375, 0.4375, -0.4375, 0.4375},
+			{-0.4375, -0.5, -0.4375, -0.375, 0.375, -0.375},
+			{0.375, -0.5, -0.4375, 0.4375, 0.4375, -0.375},
+            {-0.125, -0.3125, -0.4375, 0.125, -0.1875, -0.3125},--knob
 		},
+    },
 	selection_box = {
 		type = "fixed",
 		fixed = {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
 	},
-	after_place_node = function(pos, placer, itemstack)
+    after_place_node = function(pos, placer, itemstack)
     if minetest.get_modpath( "mobs") then
-         if math.random(1, 4) == 1 then
+         if math.random(1, 18) == 1 then
           minetest.add_entity(pos, "mobs_animal:bee")
         end
     else
@@ -206,13 +209,80 @@ minetest.register_node("candles:hive_empty", {
 		tmr:start(300)
 	end
 })
+--Busy Bees (adapted from glow mod by bdjnk)
+minetest.register_node("candles:busybees", {
+	description = "Busy Bees",
+	inventory_image ="candles_hive_bee.png",
+	drawtype = "glasslike",
+	tiles = {
+		{
+			name = "candles_hive_busybees.png",
+			animation = {
+				type = "vertical_frames",
+				aspect_w = 16,
+				aspect_h = 16,
+				length = 2,
+			},
+		},
+	},
+	alpha = 155,
+	paramtype = "light",
+	walkable = false,
+	pointable = false,
+	diggable = false,
+	climbable = false,
+	buildable_to = true,
+	--groups = {not_in_creative_inventory =1},
+	on_punch = function(_, _, puncher, _)
+		local health = puncher:get_hp()
+		puncher:set_hp(health - 1)
+	end,
+	on_rightclick = function(_, _, clicker)
+		local health = clicker:get_hp()
+		clicker:set_hp(health - 1)
+	end,
+	on_construct = function(pos)
+	minetest.sound_play("candles_bee", {gain = 0.009, max_hear_distance = 1.0})
+	end,
+})
 --Honeycomb Block
 minetest.register_node("candles:honeycomb_block", {
-	description = "Honey Block",
-	inventory_image = "candles_honeycomb_block.png",
-	tiles = {"candles_honeycomb_block.png"},
+	description = "Honeycomb Block",
+	inventory_image = "candles_honey_comb_block.png",
+	tiles = {"candles_honey_comb_block.png"},
 	groups = {snappy = 3, flammable = 2},
 	sounds = default.node_sound_dirt_defaults(),
+})
+--Jarred Honey
+minetest.register_node("candles:honey_jar", {
+	description = "Jar of Honey",
+	inventory_image = "candles_honey_jar_inv.png",
+	drawtype = "nodebox",
+	use_texture_alpha = true,
+	tiles = {"candles_honey_jar_top.png","candles_honey_jar_bottom.png","candles_honey_jar.png"},
+	wield_image = "candles_honey_jar_inv.png",
+	paramtype = "light",
+	is_ground_content = false,
+	walkable = false,
+	node_box = {
+		type = "fixed",
+		fixed = {
+			{-0.1875, -0.5, -0.1875, 0.1875, 0.0625, 0.1875},
+			{-0.125, 0.0625, -0.125, 0.125, 0.125, 0.125},
+			{-0.25, -0.4375, -0.1875, 0.25, 0, 0.1875},
+			{-0.1875, -0.4375, -0.25, 0.1875, 0, 0.25},
+		},
+	},
+	selection_box = {
+		type = "fixed",
+		fixed = {
+			{-0.3125, -0.5, -0.3125, 0.3125, 0.1875, 0.3125},
+			--{-0.25, -0.5, -0.25, 0.25, 0.4, 0.25}
+		},
+	},
+	groups = {vessel=1,dig_immediate=3,attached_node=1},
+	sounds = default.node_sound_glass_defaults(),
+	on_use = minetest.item_eat(10),
 })
 --Bottled Honey
 minetest.register_node("candles:honey_bottled", {
@@ -230,11 +300,87 @@ minetest.register_node("candles:honey_bottled", {
 	},
 	groups = {vessel=1,dig_immediate=3,attached_node=1},
 	sounds = default.node_sound_glass_defaults(),
-	on_use = minetest.item_eat(8),
+	on_use = minetest.item_eat(6, "vessels:glass_bottle"),
 })
----------------
---Craft Items
----------------
+------------
+-- ABMs
+------------
+--particle ABM adapted from Bees Mod by bas080
+  minetest.register_abm({ --particles
+    nodenames = {"candles:hive", "candles:hive_wild", "candles:hive_empty"},
+    interval  = 10,
+    chance    = 4,
+    action = function(pos)
+    if minetest.env:get_timeofday() >= 0.25 and minetest.env:get_timeofday() < 0.75 then
+      minetest.add_particle({
+        pos = {x=pos.x, y=pos.y, z=pos.z},
+        vel = {x=(math.random()-0.5)*5,y=(math.random()-0.5)*5,z=(math.random()-0.5)*5},
+        acc = {x=math.random()-0.5,y=math.random()-0.5,z=math.random()-0.5},
+        expirationtime = math.random(3.5),
+        minsize = 0.1,
+        maxsize = 0.2,
+        collisiondetection = true,
+        texture = "candles_hive_bee.png",
+      })
+      end
+    end,
+  })
+--bee spawning adapted from glow mod by bdjnk
+minetest.register_abm({
+	nodenames = { "air" },
+	neighbors = {"candles:hive_empty", "group:flower"},
+	interval = 1200,
+	chance = 100,
+	action = function(pos, node, active_object_count, active_object_count_wider)
+if minetest.env:get_timeofday() >= 0.25 and minetest.env:get_timeofday() < 0.75 then
+			if minetest.find_node_near(pos, 4, "candles:busybees") == nil then
+				minetest.set_node(pos, {name = "candles:busybees"})
+				minetest.sound_play("candles_bee", {gain = 0.1, max_hear_distance = 1.0})
+			end
+		end
+	end,
+})
+
+minetest.register_abm({
+	nodenames = { "air" },
+	neighbors = {"candles:hive_wild", "candles:hive"},
+	interval = 600,
+	chance = 40,
+	action = function(pos, node, active_object_count, active_object_count_wider)
+if minetest.env:get_timeofday() >= 0.25 and minetest.env:get_timeofday() < 0.75 then
+			if minetest.find_node_near(pos, 4, "candles:busybees") == nil then
+				minetest.set_node(pos, {name = "candles:busybees"})
+				minetest.sound_play("candles_bee", {gain = 0.1, max_hear_distance = 1.0})
+			end
+		end
+	end,
+})
+
+minetest.register_abm({
+	nodenames = {"candles:busybees"},
+	interval = 100,
+	chance = 3,
+	action = function(pos, node, active_object_count, active_object_count_wider)
+		minetest.remove_node(pos)
+	end,
+})
+
+minetest.register_abm({
+	nodenames = "default:apple",
+	neighbors = "default:leaves",
+	interval = 1800,
+	chance = 601,
+	action = function(pos, node, active_object_count, active_object_count_wider)
+		local abv = minetest.env:get_node({x=pos.x,y=pos.y+1,z=pos.z})
+		if not abv or abv.name ~= "default:leaves" then
+			return nil
+		end
+		minetest.env:add_node(pos,{name="candles:hive_wild", param2 = 0})
+	end
+})
+--------------------------
+-- Register Craft Items
+--------------------------
 minetest.register_craftitem("candles:wax", {
 	description = "Beeswax",
 	inventory_image = "candles_wax.png",
@@ -243,50 +389,46 @@ minetest.register_craftitem("candles:wax", {
 minetest.register_craftitem("candles:honey", {
 	description = "Honey",
 	inventory_image = "candles_honey.png",
-	on_use = minetest.item_eat(4),
+	wield_image = "candles_honey.png",
+	on_use = minetest.item_eat(2)
 })
 
 minetest.register_craftitem("candles:comb", {
 	description = "Honey Comb",
-	inventory_image = "candles_comb.png",
-	on_use = minetest.item_eat(6),
+	inventory_image = "candles_honey_comb.png",
+	on_use = minetest.item_eat(4),
 })
-----------------
---Craft Recipes
------------------
+-----------------------------
+-- Register Craft Recipes
+-----------------------------
 minetest.register_craft({
-	output = 'candles:candle',
+	output = "candles:hive_empty",
 	recipe = {
-		{'candles:wax','farming:cotton','candles:wax'},
+		{"group:stick", "group:stick", "group:stick"},
+		{"group:stick", "default:glass", "group:stick"},
+		{"default:wood","default:wood","default:wood"},
 	}
 })
 
 minetest.register_craft({
-	output = 'candles:honey 2',
+	type = "cooking",
+	output = "candles:wax 2",
+	recipe = "candles:comb"
+})
+
+minetest.register_craft({
+	output = "candles:honey 2",
 	recipe = {
-		{'candles:comb'},
+		{"candles:comb"},
 	}
 })
 
 minetest.register_craft({
-	type = 'cooking',
-	output = 'candles:wax 2',
-	recipe = 'candles:comb'
-})
-
-minetest.register_craft({
-	output = 'candles:comb 9',
+	output = "candles:honey_jar",
 	recipe = {
-		{'candles:honeycomb_block'},
-	}
-})
-
-minetest.register_craft({
-	output = "candles:honeycomb_block",
-	recipe = {
-		{"candles:comb", "candles:comb", "candles:comb"},
-		{"candles:comb", "candles:comb", "candles:comb"},
-		{"candles:comb", "candles:comb", "candles:comb"},
+		{"candles:honey", "candles:honey"},
+		{"candles:comb", "candles:comb"},
+		{"vessels:glass_bottle", "vessels:glass_bottle"},
 	}
 })
 
@@ -300,35 +442,17 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-	output = 'candles:hive',
+	output = "candles:comb 9",
 	recipe = {
-		{'default:wood','default:wood','default:wood'},
-		{'default:stick','candles:hive_wild','default:stick'},
-		{'default:stick','default:wood','default:stick'},
+		{"candles:honeycomb_block"},
 	}
 })
 
 minetest.register_craft({
-	output = 'candles:hive_empty',
+	output = "candles:honeycomb_block",
 	recipe = {
-		{'default:wood','default:wood','default:wood'},
-		{'default:stick','default:paper','default:stick'},
-		{'default:stick','default:wood','default:stick'},
+		{"candles:comb", "candles:comb", "candles:comb"},
+		{"candles:comb", "candles:comb", "candles:comb"},
+		{"candles:comb", "candles:comb", "candles:comb"},
 	}
-})
-------------
--- ABMs
-------------
-minetest.register_abm({
-	nodenames = 'default:apple',
-	neighbors = 'default:leaves',
-	interval = 1200,
-	chance = 30,
-	action = function(pos, node, active_object_count, active_object_count_wider)
-		local abv = minetest.env:get_node({x=pos.x,y=pos.y+1,z=pos.z})
-		if not abv or abv.name ~= 'default:leaves' then
-			return nil
-		end
-		minetest.env:add_node(pos,{name='candles:hive_wild', param2 = 0})
-	end
 })
