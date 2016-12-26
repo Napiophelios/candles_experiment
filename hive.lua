@@ -20,7 +20,7 @@ function hive.construct(pos)
 	local inv = meta:get_inventory()
 
 	local formspec = [[ size[8,5;]
-			label[0.5,0;Bees are busy making honey...]
+			label[0.5,0.03;Bees are busy making honey...]
 			image[7,0;1,1;candles_hive_bee.png]
             image[6,0;1,1;candles_hive_dandelion.png]
 			image[5,0;1,1;candles_hive_layout.png]
@@ -62,7 +62,7 @@ function hive.timer(pos)
 end
 
 --------------------
--- Register Nodes
+-- Nodes
 --------------------
 --Natural Beehive
 minetest.register_node("candles:hive_wild", {
@@ -199,13 +199,13 @@ minetest.register_node("candles:hive_empty", {
    end
 	end,
 	on_timer = function(pos,elapsed)
-		minetest.env:add_node(pos,{name='candles:hive'})
+		minetest.env:add_node(pos,{name="candles:hive"})
 		return false
 	end,
 	on_construct = function(pos)
 		local tmr = minetest.env:get_node_timer(pos)
 		local meta = minetest.env:get_meta(pos)
-		meta:set_string('infotext','Bee Hive: Empty');
+		meta:set_string("infotext","Bee Hive: Empty");
 		tmr:start(300)
 	end
 })
@@ -213,6 +213,7 @@ minetest.register_node("candles:hive_empty", {
 minetest.register_node("candles:busybees", {
 	description = "Busy Bees",
 	inventory_image ="candles_hive_bee.png",
+	weild_image ="candles_hive_bee.png",
 	drawtype = "glasslike",
 	tiles = {
 		{
@@ -378,14 +379,9 @@ minetest.register_abm({
 		minetest.env:add_node(pos,{name="candles:hive_wild", param2 = 0})
 	end
 })
---------------------------
--- Register Craft Items
---------------------------
-minetest.register_craftitem("candles:wax", {
-	description = "Beeswax",
-	inventory_image = "candles_wax.png",
-})
-
+----------------
+-- Craft Items
+----------------
 minetest.register_craftitem("candles:honey", {
 	description = "Honey",
 	inventory_image = "candles_honey.png",
@@ -398,9 +394,9 @@ minetest.register_craftitem("candles:comb", {
 	inventory_image = "candles_honey_comb.png",
 	on_use = minetest.item_eat(4),
 })
------------------------------
--- Register Craft Recipes
------------------------------
+------------------
+-- Craft Recipes
+------------------
 minetest.register_craft({
 	output = "candles:hive_empty",
 	recipe = {

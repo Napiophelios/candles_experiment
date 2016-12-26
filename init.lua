@@ -17,122 +17,122 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>
 --]]
 
-dofile(minetest.get_modpath("candles").."/hive.lua")
+--dofile(minetest.get_modpath("candles").."/hive.lua")
 
 local candles = {};
 
 candles.types = {
 	{
-		unlit = 'candles:candle',
-		lit = 'candles:candle_lit',
-		name = 'Candle',
+		unlit = "candles:candle",
+		lit = "candles:candle_lit",
+		name = "Candle",
 		ingot = nil,
-		image = 'candles_candle'
+		image = "candles_candle"
 	},
 		{
-		unlit = 'candles:candle_floor_steel',
-		lit = 'candles:candle_floor_steel_lit',
-		name = 'Steel Candle Stick',
-		ingot = 'default:steel_ingot',
-		image = 'candles_candle_steel'
+		unlit = "candles:candle_floor_steel",
+		lit = "candles:candle_floor_steel_lit",
+		name = "Steel Candle Stick",
+		ingot = "default:steel_ingot",
+		image = "candles_candle_steel"
 	},
 	{
-		unlit = 'candles:candle_floor_copper',
-		lit = 'candles:candle_floor_copper_lit',
-		name = 'Copper Candle Stick',
-		ingot = 'default:copper_ingot',
-		image = 'candles_candle_copper'
+		unlit = "candles:candle_floor_copper",
+		lit = "candles:candle_floor_copper_lit",
+		name = "Copper Candle Stick",
+		ingot = "default:copper_ingot",
+		image = "candles_candle_copper"
 	},
 	{
-		unlit = 'candles:candle_floor_silver',
-		lit = 'candles:candle_floor_silver_lit',
-		name = 'Silver Candle Stick',
-		ingot = 'moreores:silver_ingot',
-		image = 'candles_candle_silver'
+		unlit = "candles:candle_floor_silver",
+		lit = "candles:candle_floor_silver_lit",
+		name = "Silver Candle Stick",
+		ingot = "moreores:silver_ingot",
+		image = "candles_candle_silver"
 	},
 	{
-		unlit = 'candles:candle_floor_gold',
-		lit = 'candles:candle_floor_gold_lit',
-		name = 'Gold Candle Stick',
-		ingot = 'default:gold_ingot',
-		image = 'candles_candle_gold'
+		unlit = "candles:candle_floor_gold",
+		lit = "candles:candle_floor_gold_lit",
+		name = "Gold Candle Stick",
+		ingot = "default:gold_ingot",
+		image = "candles_candle_gold"
 	},
 	{
-		unlit = 'candles:candle_floor_bronze',
-		lit = 'candles:candle_floor_bronze_lit',
-		name = 'Bronze Candle Stick',
-		ingot = 'default:bronze_ingot',
-		image = 'candles_candle_bronze'
+		unlit = "candles:candle_floor_bronze",
+		lit = "candles:candle_floor_bronze_lit",
+		name = "Bronze Candle Stick",
+		ingot = "default:bronze_ingot",
+		image = "candles_candle_bronze"
 	},
 	{
-		unlit = 'candles:candle_wall_steel',
-		lit = 'candles:candle_wall_steel_lit',
-		name = 'Steel Wall-Mount Candle',
-		ingot = 'default:steel_ingot',
-		image = 'candles_candle_steel'
+		unlit = "candles:candle_wall_steel",
+		lit = "candles:candle_wall_steel_lit",
+		name = "Steel Wall-Mount Candle",
+		ingot = "default:steel_ingot",
+		image = "candles_candle_steel"
 	},
 	{
-		unlit = 'candles:candle_wall_copper',
-		lit = 'candles:candle_wall_copper_lit',
-		name = 'Copper Wall-Mount Candle',
-		ingot = 'default:copper_ingot',
-		image = 'candles_candle_copper'
+		unlit = "candles:candle_wall_copper",
+		lit = "candles:candle_wall_copper_lit",
+		name = "Copper Wall-Mount Candle",
+		ingot = "default:copper_ingot",
+		image = "candles_candle_copper"
 	},
 	{
-		unlit = 'candles:candle_wall_silver',
-		lit = 'candles:candle_wall_silver_lit',
-		name = 'Silver Wall-Mount Candle',
-		ingot = 'moreores:silver_ingot',
-		image = 'candles_candle_silver'
+		unlit = "candles:candle_wall_silver",
+		lit = "candles:candle_wall_silver_lit",
+		name = "Silver Wall-Mount Candle",
+		ingot = "moreores:silver_ingot",
+		image = "candles_candle_silver"
 	},
 	{
-		unlit = 'candles:candle_wall_gold',
-		lit = 'candles:candle_wall_gold_lit',
-		name = 'Gold Wall-Mount Candle',
-		ingot = 'default:gold_ingot',
-		image = 'candles_candle_gold'
+		unlit = "candles:candle_wall_gold",
+		lit = "candles:candle_wall_gold_lit",
+		name = "Gold Wall-Mount Candle",
+		ingot = "default:gold_ingot",
+		image = "candles_candle_gold"
 	},
 	{
-		unlit = 'candles:candle_wall_bronze',
-		lit = 'candles:candle_wall_bronze_lit',
-		name = 'Bronze Wall-Mount Candle',
-		ingot = 'default:bronze_ingot',
-		image = 'candles_candle_bronze'
+		unlit = "candles:candle_wall_bronze",
+		lit = "candles:candle_wall_bronze_lit",
+		name = "Bronze Wall-Mount Candle",
+		ingot = "default:bronze_ingot",
+		image = "candles_candle_bronze"
 	},
 	{
-		unlit = 'candles:candelabra_steel',
-		lit = 'candles:candelabra_steel_lit',
-		name = 'Steel Candelebra',
-		ingot = 'default:steel_ingot',
-		image = 'candles_candelabra_steel'
+		unlit = "candles:candelabra_steel",
+		lit = "candles:candelabra_steel_lit",
+		name = "Steel Candelebra",
+		ingot = "default:steel_ingot",
+		image = "candles_candelabra_steel"
 	},
 	{
-		unlit = 'candles:candelabra_copper',
-		lit = 'candles:candelabra_copper_lit',
-		name = 'Copper Candelebra',
-		ingot = 'default:copper_ingot',
-		image = 'candles_candelabra_copper'
+		unlit = "candles:candelabra_copper",
+		lit = "candles:candelabra_copper_lit",
+		name = "Copper Candelebra",
+		ingot = "default:copper_ingot",
+		image = "candles_candelabra_copper"
 	},
 	{
-		unlit = 'candles:candelabra_silver',
-		lit = 'candles:candelabra_silver_lit',
-		name = 'Silver Candelebra',
-		ingot = 'moreores:silver_ingot',
-		image = 'candles_candelabra_silver'
+		unlit = "candles:candelabra_silver",
+		lit = "candles:candelabra_silver_lit",
+		name = "Silver Candelebra",
+		ingot = "moreores:silver_ingot",
+		image = "candles_candelabra_silver"
 	},
 	{
-		unlit = 'candles:candelabra_gold',
-		lit = 'candles:candelabra_gold_lit',
-		name = 'Gold Candelebra',
-		ingot = 'default:gold_ingot',
-		image = 'candles_candelabra_gold'
+		unlit = "candles:candelabra_gold",
+		lit = "candles:candelabra_gold_lit",
+		name = "Gold Candelebra",
+		ingot = "default:gold_ingot",
+		image = "candles_candelabra_gold"
 	},
 	{
-		unlit = 'candles:candelabra_bronze',
-		lit = 'candles:candelabra_bronze_lit',
-		name = 'Bronze Candelebra',
-		ingot = 'default:bronze_ingot',
-		image = 'candles_candelabra_bronze'
+		unlit = "candles:candelabra_bronze",
+		lit = "candles:candelabra_bronze_lit",
+		name = "Bronze Candelebra",
+		ingot = "default:bronze_ingot",
+		image = "candles_candelabra_bronze"
 	},
 }
 
@@ -154,8 +154,6 @@ candles.find_unlit = function(name)
 	return nil
 end
 
---==========================================
-
 candles.light1 = function(pos, node, puncher)
 	if not puncher or not node then
 		return
@@ -165,7 +163,7 @@ candles.light1 = function(pos, node, puncher)
 		return
 	end
 	wield = wield:get_name()
-	if wield and wield == 'default:torch' then
+	if wield and wield == "default:torch" then
 		local litname = candles.find_lit(node.name)
 		minetest.env:add_node(pos,{name=litname, param1=node.param1, param2=node.param2})
 	local p1 = {x=pos.x, y=pos.y+1, z=pos.z}
@@ -185,7 +183,7 @@ candles.light2 = function(pos, node, puncher)
 		return
 	end
 	wield = wield:get_name()
-	if wield and wield == 'default:torch' then
+	if wield and wield == "default:torch" then
 		local litname = candles.find_lit(node.name)
 		minetest.env:add_node(pos,{name=litname, param1=node.param1, param2=node.param2})
 		end
@@ -200,18 +198,16 @@ candles.light3 = function(pos, node, puncher)
 		return
 	end
 	wield = wield:get_name()
-	if wield and wield == 'default:torch' then
+	if wield and wield == "default:torch" then
 		local litname = candles.find_lit(node.name)
 		minetest.env:add_node(pos,{name=litname, param1=node.param1, param2=node.param2})
 	local p1 = {x=pos.x, y=pos.y+1, z=pos.z}
 	local n1 = minetest.get_node(p1)
 	if n1.name == "air" then
-			minetest.place_node(p1, {name="candles:candelabra_flame"})
+			minetest.add_node(p1, {name="candles:candelabra_flame", param2 = 1})
 		end
 		end
 	end
-
---==========================================
 
 	candles.snuff1 = function(pos, node, puncher)
 	if not puncher or not node then
@@ -222,7 +218,7 @@ candles.light3 = function(pos, node, puncher)
 		return
 	end
 	wield = wield:get_name()
-	if not wield or wield ~= 'default:torch' then
+	if not wield or wield ~= "default:torch" then
 		local unlitname = candles.find_unlit(node.name)
 		minetest.env:add_node(pos,{name=unlitname, param1=node.param1, param2=node.param2})
 
@@ -243,7 +239,7 @@ candles.light3 = function(pos, node, puncher)
 		return
 	end
 	wield = wield:get_name()
-	if not wield or wield ~= 'default:torch' then
+	if not wield or wield ~= "default:torch" then
 		local unlitname = candles.find_unlit(node.name)
 		minetest.env:add_node(pos,{name=unlitname, param1=node.param1, param2=node.param2})
 		end
@@ -258,7 +254,7 @@ candles.light3 = function(pos, node, puncher)
 		return
 	end
 	wield = wield:get_name()
-	if not wield or wield ~= 'default:torch' then
+	if not wield or wield ~= "default:torch" then
 		local unlitname = candles.find_unlit(node.name)
 		minetest.env:add_node(pos,{name=unlitname, param1=node.param1, param2=node.param2})
 
@@ -269,8 +265,6 @@ candles.light3 = function(pos, node, puncher)
 		end
 	end
 	end
-
---==========================================
 
 candles.create_wall = function(ctype)
 	minetest.register_node(ctype.unlit, {
@@ -357,13 +351,11 @@ candles.create_wall = function(ctype)
 	minetest.register_craft({
 		output = ctype.unlit,
 		recipe = {
-			{'','candles:candle',''},
-			{'',ctype.ingot,ctype.ingot},
+			{"","candles:candle",""},
+			{"",ctype.ingot,ctype.ingot},
 		}
 	})
 end
-
---==========================================
 
 candles.create_floor= function(ctype)
 	minetest.register_node(ctype.unlit, {
@@ -442,13 +434,11 @@ candles.create_floor= function(ctype)
 	minetest.register_craft({
 		output = ctype.unlit,
 		recipe = {
-			{'candles:candle'},
+			{"candles:candle"},
 			{ctype.ingot},
 		}
 	})
 end
-
---==========================================
 
 candles.create_candelabra = function(ctype)
 	minetest.register_node(ctype.unlit, {
@@ -543,18 +533,16 @@ candles.create_candelabra = function(ctype)
 	minetest.register_craft({
 		output = ctype.unlit,
 		recipe = {
-			{'candles:candle','candles:candle','candles:candle'},
+			{"candles:candle","candles:candle","candles:candle"},
 			{ctype.ingot,ctype.ingot,ctype.ingot},
 		}
 	})
 end
 
---==========================================
-
 minetest.register_node("candles:candle", {
 	description = "Candle",
-	drawtype = 'plantlike',
- tiles = {'candles_candle.png'},
+	drawtype = "plantlike",
+ tiles = {"candles_candle.png"},
 	paramtype = "light",
 	groups = {crumbly=3,oddly_breakable_by_hand=1},
 	on_punch = candles.light2,
@@ -574,7 +562,7 @@ minetest.register_node("candles:candle", {
 		local wdir = minetest.dir_to_wallmounted(dir)
 
 		if wdir == 1 then
-			minetest.env:add_node(above, {name = 'candles:candle'})
+			minetest.env:add_node(above, {name = "candles:candle"})
 			itemstack:take_item()
 		end
 		return itemstack
@@ -583,9 +571,9 @@ minetest.register_node("candles:candle", {
 
 minetest.register_node("candles:candle_lit", {
 	description = "Candle",
-	drawtype = 'plantlike',
+	drawtype = "plantlike",
 tiles = {
-{name='candles_candle_lit.png', animation={type='vertical_frames', aspect_w=16, aspect_h=16, length=1}},
+{name="candles_candle_lit.png", animation={type="vertical_frames", aspect_w=16, aspect_h=16, length=1}},
 },
 	paramtype = "light",
 	groups = {crumbly=3,oddly_breakable_by_hand=1, not_in_creative_inventory = 1},
@@ -593,7 +581,7 @@ tiles = {
 	sunlight_propagates = true,
 	walkable = false,
 	light_source = 10,
-	drop = 'candles:candle',
+	drop = "candles:candle",
 	selection_box = {
 		type = "fixed",
 		fixed = {-0.1875, -0.5, -0.1875, 0.1875, 0.125, 0.1875},
@@ -602,8 +590,6 @@ tiles = {
 		return false
 	end,
 })
-
---==========================================
 
 minetest.register_node("candles:candle_flame", {
 	drawtype = "plantlike",
@@ -661,18 +647,44 @@ minetest.register_node("candles:candelabra_flame", {
 	end,
 	})
 
---==========================================
 
 for i,n in pairs(candles.types) do
    if n.ingot then
-		if string.find(n.unlit,'candle_wall') then
+		if string.find(n.unlit,"candle_wall") then
 		candles.create_wall(n)
 		end
-		if string.find(n.unlit,'candelabra') then
+		if string.find(n.unlit,"candelabra") then
 		candles.create_candelabra(n)
 		end
-		if string.find(n.unlit,'candle_floor') then
+		if string.find(n.unlit,"candle_floor") then
 		candles.create_floor(n)
 		end
 	end
 end
+
+----------------
+-- Craft Items
+----------------
+minetest.register_craftitem("candles:wax", {
+	description = "Wax Material",
+	inventory_image = "candles_wax.png",
+})
+
+------------------
+-- Craft Recipes
+------------------
+minetest.register_craft({
+	output = "candles:wax 2", --Palm Wax???   :)
+	recipe = {
+		{"default:jungleleaves", "default:jungleleaves", "default:jungleleaves"},
+		{"default:jungleleaves", "default:jungleleaves", "default:jungleleaves"},
+		{"default:jungleleaves", "default:jungleleaves", "default:jungleleaves"},
+	}
+})
+
+minetest.register_craft({
+	output = "candles:candle",
+	recipe = {
+		{"candles:wax", "farming:cotton", "candles:wax"},
+	}
+})
