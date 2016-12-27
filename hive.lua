@@ -233,7 +233,7 @@ minetest.register_node("candles:busybees", {
 	diggable = false,
 	climbable = false,
 	buildable_to = true,
-	--groups = {not_in_creative_inventory =1},
+	groups = {not_in_creative_inventory =1},
 	on_punch = function(_, _, puncher, _)
 		local health = puncher:get_hp()
 		puncher:set_hp(health - 1)
@@ -254,7 +254,7 @@ minetest.register_node("candles:honeycomb_block", {
 	groups = {snappy = 3, flammable = 2},
 	sounds = default.node_sound_dirt_defaults(),
 })
---Jarred Honey
+--Jar of Honey
 minetest.register_node("candles:honey_jar", {
 	description = "Jar of Honey",
 	inventory_image = "candles_honey_jar_inv.png",
@@ -285,7 +285,7 @@ minetest.register_node("candles:honey_jar", {
 	sounds = default.node_sound_glass_defaults(),
 	on_use = minetest.item_eat(10),
 })
---Bottled Honey
+--Bottle of Honey
 minetest.register_node("candles:honey_bottled", {
 	description = "Bottled Honey",
 	inventory_image = "candles_honey_bottled.png",
@@ -308,7 +308,7 @@ minetest.register_node("candles:honey_bottled", {
 ------------
 --particle ABM adapted from Bees Mod by bas080
   minetest.register_abm({ --particles
-    nodenames = {"candles:hive", "candles:hive_wild", "candles:hive_empty"},
+    nodenames = {"candles:hive", "candles:hive_empty"},
     interval  = 10,
     chance    = 4,
     action = function(pos)
@@ -329,9 +329,9 @@ minetest.register_node("candles:honey_bottled", {
 --bee spawning adapted from glow mod by bdjnk
 minetest.register_abm({
 	nodenames = { "air" },
-	neighbors = {"candles:hive_empty", "group:flower"},
+	neighbors = {"group:flower"},
 	interval = 1200,
-	chance = 100,
+	chance = 101,
 	action = function(pos, node, active_object_count, active_object_count_wider)
 if minetest.env:get_timeofday() >= 0.25 and minetest.env:get_timeofday() < 0.75 then
 			if minetest.find_node_near(pos, 4, "candles:busybees") == nil then
@@ -344,9 +344,9 @@ if minetest.env:get_timeofday() >= 0.25 and minetest.env:get_timeofday() < 0.75 
 
 minetest.register_abm({
 	nodenames = { "air" },
-	neighbors = {"candles:hive_wild", "candles:hive"},
-	interval = 600,
-	chance = 40,
+	neighbors = {"candles:hive_wild"},
+	interval = 20,
+	chance = 10,
 	action = function(pos, node, active_object_count, active_object_count_wider)
 if minetest.env:get_timeofday() >= 0.25 and minetest.env:get_timeofday() < 0.75 then
 			if minetest.find_node_near(pos, 4, "candles:busybees") == nil then
@@ -359,7 +359,7 @@ if minetest.env:get_timeofday() >= 0.25 and minetest.env:get_timeofday() < 0.75 
 
 minetest.register_abm({
 	nodenames = {"candles:busybees"},
-	interval = 100,
+	interval = 30,
 	chance = 3,
 	action = function(pos, node, active_object_count, active_object_count_wider)
 		minetest.remove_node(pos)
@@ -369,8 +369,8 @@ minetest.register_abm({
 minetest.register_abm({
 	nodenames = "default:apple",
 	neighbors = "default:leaves",
-	interval = 1800,
-	chance = 601,
+	interval = 1200,
+	chance = 101,
 	action = function(pos, node, active_object_count, active_object_count_wider)
 		local abv = minetest.env:get_node({x=pos.x,y=pos.y+1,z=pos.z})
 		if not abv or abv.name ~= "default:leaves" then
