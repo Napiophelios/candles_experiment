@@ -104,7 +104,7 @@ minetest.register_node("candles:hive_wild", {
 --Artificial Hive
 minetest.register_node("candles:hive", {
 	description = "Artificial Hive",
-    tile_images = {"candles_hive_top.png","candles_hive_bottom.png",
+    tiles = {"candles_hive_top.png","candles_hive_bottom.png",
     "candles_hive.png","candles_hive.png",
     "candles_hive.png","candles_hive_front.png"},
     drawtype = "nodebox",
@@ -161,7 +161,7 @@ minetest.register_node("candles:hive", {
 
 minetest.register_node("candles:hive_empty", {
 	description = "Artificial Hive (empty)",
-    tile_images = {"candles_hive_empty_top.png","candles_hive_empty_bottom.png",
+    tiles = {"candles_hive_empty_top.png","candles_hive_empty_bottom.png",
     "candles_hive_empty.png","candles_hive_empty.png",
     "candles_hive_empty.png","candles_hive_empty_front.png"},
     drawtype = "nodebox",

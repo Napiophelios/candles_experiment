@@ -17,7 +17,9 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>
 --]]
 
---dofile(minetest.get_modpath("candles").."/hive.lua")
+dofile(minetest.get_modpath("candles").."/hive.lua")
+
+screwdriver = screwdriver or {}
 
 local candles = {};
 
@@ -269,7 +271,7 @@ candles.light3 = function(pos, node, puncher)
 candles.create_wall = function(ctype)
 	minetest.register_node(ctype.unlit, {
 		description = ctype.name,
-		tile_images = {ctype.image.."_top.png",ctype.image.."_bottom.png",ctype.image..".png"},
+		tiles = {ctype.image.."_top.png",ctype.image.."_bottom.png",ctype.image..".png"},
 		drawtype = "nodebox",
 		paramtype = "light",
 		paramtype2 = "facedir",
@@ -277,6 +279,12 @@ candles.create_wall = function(ctype)
 		on_punch = candles.light1,
 		sunlight_propagates = true,
 		walkable = false,
+		sounds = default.node_sound_metal_defaults({
+			dug = {name = "default_dig_crumbly", gain = 1.0},
+			dig = {name = "default_dig_crumbly", gain = 0.1},
+			}
+		),
+		on_rotate = screwdriver.rotate_simple,
 		node_box = {
 			type = "fixed",
 			fixed = {
@@ -319,7 +327,7 @@ candles.create_wall = function(ctype)
 
 	minetest.register_node(ctype.lit, {
 		description = ctype.name,
-		tile_images = {ctype.image.."_top.png",ctype.image.."_bottom.png",ctype.image.."_lit.png"},
+		tiles = {ctype.image.."_top.png",ctype.image.."_bottom.png",ctype.image.."_lit.png"},
 		drawtype = "nodebox",
 		paramtype = "light",
 		paramtype2 = "facedir",
@@ -327,6 +335,12 @@ candles.create_wall = function(ctype)
 		on_punch = candles.snuff1,
 		sunlight_propagates = true,
 		walkable = false,
+		sounds = default.node_sound_metal_defaults({
+			dug = {name = "default_dig_crumbly", gain = 1.0},
+			dig = {name = "default_dig_crumbly", gain = 0.1},
+			}
+		),
+		on_rotate = screwdriver.rotate_simple,
 		drop = ctype.unlit,
 		node_box = {
 			type = "fixed",
@@ -360,7 +374,7 @@ end
 candles.create_floor= function(ctype)
 	minetest.register_node(ctype.unlit, {
 		description = ctype.name,
-		tile_images = {ctype.image.."_top.png",ctype.image.."_bottom.png",ctype.image..".png"},
+		tiles = {ctype.image.."_top.png",ctype.image.."_bottom.png",ctype.image..".png"},
 		drawtype = "nodebox",
 		paramtype = "light",
 		paramtype2 = "facedir",
@@ -368,6 +382,12 @@ candles.create_floor= function(ctype)
 		on_punch = candles.light1,
 		sunlight_propagates = true,
 		walkable = false,
+		sounds = default.node_sound_metal_defaults({
+			dug = {name = "default_dig_crumbly", gain = 1.0},
+			dig = {name = "default_dig_crumbly", gain = 0.1},
+			}
+		),
+		on_rotate = screwdriver.rotate_simple,
 		node_box = {
 			type = "fixed",
 			fixed = {
@@ -403,7 +423,7 @@ candles.create_floor= function(ctype)
 
 	minetest.register_node(ctype.lit, {
 		description = ctype.name,
-		tile_images = {ctype.image.."_top.png",ctype.image.."_bottom.png",ctype.image.."_lit.png"},
+		tiles = {ctype.image.."_top.png",ctype.image.."_bottom.png",ctype.image.."_lit.png"},
 		drawtype = "nodebox",
 		paramtype = "light",
 		paramtype2 = "facedir",
@@ -411,6 +431,12 @@ candles.create_floor= function(ctype)
 		on_punch = candles.snuff1,
 		sunlight_propagates = true,
 		walkable = false,
+		sounds = default.node_sound_metal_defaults({
+			dug = {name = "default_dig_crumbly", gain = 1.0},
+			dig = {name = "default_dig_crumbly", gain = 0.1},
+			}
+		),
+		on_rotate = screwdriver.rotate_simple,
 		drop = ctype.unlit,
 		node_box = {
 			type = "fixed",
@@ -443,7 +469,7 @@ end
 candles.create_candelabra = function(ctype)
 	minetest.register_node(ctype.unlit, {
 		description = ctype.name,
-		tile_images = {ctype.image.."_top.png",ctype.image.."_bottom.png",ctype.image..".png"},
+		tiles = {ctype.image.."_top.png",ctype.image.."_bottom.png",ctype.image..".png"},
 		drawtype = "nodebox",
 		paramtype = "light",
 		paramtype2 = "facedir",
@@ -451,6 +477,12 @@ candles.create_candelabra = function(ctype)
 		on_punch = candles.light3,
 		sunlight_propagates = true,
 		walkable = false,
+		sounds = default.node_sound_metal_defaults({
+			dug = {name = "default_dig_crumbly", gain = 1.0},
+			dig = {name = "default_dig_crumbly", gain = 0.1},
+			}
+		),
+		on_rotate = screwdriver.rotate_simple,
 		node_box = {
 			type = "fixed",
 			fixed = {
@@ -494,7 +526,7 @@ candles.create_candelabra = function(ctype)
 
 	minetest.register_node(ctype.lit, {
 		description = ctype.name,
-		tile_images = {ctype.image.."_top.png",ctype.image.."_bottom.png",ctype.image.."_lit.png"},
+		tiles = {ctype.image.."_top.png",ctype.image.."_bottom.png",ctype.image.."_lit.png"},
 		drawtype = "nodebox",
 		paramtype = "light",
 		paramtype2 = "facedir",
@@ -502,6 +534,12 @@ candles.create_candelabra = function(ctype)
 		on_punch = candles.snuff3,
 		sunlight_propagates = true,
 		walkable = false,
+		sounds = default.node_sound_metal_defaults({
+			dug = {name = "default_dig_crumbly", gain = 1.0},
+			dig = {name = "default_dig_crumbly", gain = 0.1},
+			}
+		),
+		on_rotate = screwdriver.rotate_simple,
 		drop = ctype.unlit,
 		node_box = {
 			type = "fixed",
