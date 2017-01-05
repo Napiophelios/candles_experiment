@@ -76,7 +76,6 @@ minetest.register_node("candles:hive_wild", {
 	walkable = true,
 	groups = {snappy = 3, oddly_breakable_by_hand = 2, flammable = 1, not_in_creative_inventory=1},
     sounds = default.node_sound_leaves_defaults(),
-	drop = "candles:honey 2",
 	drop = {
 		max_items = 1,
 		items = {
