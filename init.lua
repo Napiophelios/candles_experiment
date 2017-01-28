@@ -17,6 +17,8 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>
 --]]
 
+
+dofile(minetest.get_modpath("candles").."/chandeliers.lua")
 dofile(minetest.get_modpath("candles").."/hive.lua")
 
 screwdriver = screwdriver or {}

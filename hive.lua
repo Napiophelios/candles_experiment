@@ -77,10 +77,10 @@ minetest.register_node("candles:hive_wild", {
 	groups = {snappy = 3, oddly_breakable_by_hand = 2, flammable = 1, not_in_creative_inventory=1},
     sounds = default.node_sound_leaves_defaults(),
 	drop = {
-		max_items = 1,
+--		max_items = 1,
 		items = {
-			{items = {"candles:comb"}, rarity = 5},
-			{items = {"candles:honey 2"}}
+			{items = {"candles:comb"}, rarity = 3},
+			{items = {"candles:honey"}}
 		}
 	},
     after_place_node = function(pos, placer, itemstack)
@@ -208,6 +208,45 @@ minetest.register_node("candles:hive_empty", {
 		tmr:start(300)
 	end
 })
+
+minetest.register_node("candles:hive_dormant", {
+	description = "Artificial Hive (dormant)",
+    tiles = {"candles_hive_empty_top.png","candles_hive_empty_bottom.png",
+    "candles_hive_empty.png","candles_hive_empty.png",
+    "candles_hive_empty.png","candles_hive_empty_front.png"},
+    drawtype = "nodebox",
+	paramtype = "light",
+	paramtype2 = "facedir",
+	place_param2 = 0,
+	on_rotate = screwdriver.rotate_simple,
+    drop = "candles:hive_empty",
+	groups = {choppy = 3, oddly_breakable_by_hand = 3, flammable = 3, not_in_creative_inventory=1},
+	sounds = default.node_sound_wood_defaults(),
+	node_box = {
+		type = "fixed",
+		fixed = {
+			{-0.375, 0, -0.375, 0.375, 0.5, 0.375},
+			{-0.4375, 0.375, -0.4375, 0.4375, 0.4375, 0.4375},
+			{-0.4375, -0.0625, -0.4375, 0.4375, 0, 0.4375},
+			{-0.4375, -0.5, 0.375, -0.375, 0.4375, 0.4375},
+			{0.375, -0.5, 0.375, 0.4375, 0.4375, 0.4375},
+			{-0.4375, -0.5, -0.375, 0.4375, -0.0625, 0.4375},
+			{-0.4375, -0.5, -0.4375, 0.4375, -0.4375, 0.4375},
+			{-0.4375, -0.5, -0.4375, -0.375, 0.375, -0.375},
+			{0.375, -0.5, -0.4375, 0.4375, 0.4375, -0.375},
+			{-0.125, -0.3125, -0.4375, 0.125, -0.1875, -0.3125},--knob
+		},
+    },
+	selection_box = {
+		type = "fixed",
+		fixed = {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
+	},
+	on_construct = function(pos)
+		local meta = minetest.env:get_meta(pos)
+		meta:set_string("infotext","Bee Hive: Dormant");
+	end
+})
+
 --Busy Bees (adapted from glow mod by bdjnk)
 minetest.register_node("candles:busybees", {
 	description = "Busy Bees",
@@ -329,7 +368,7 @@ minetest.register_node("candles:honey_bottled", {
 minetest.register_abm({
 	nodenames = { "air" },
 	neighbors = {"group:flower"},
-	interval = 1200,
+	interval = 200,
 	chance = 101,
 	action = function(pos, node, active_object_count, active_object_count_wider)
 if minetest.env:get_timeofday() >= 0.25 and minetest.env:get_timeofday() < 0.75 then
@@ -344,7 +383,7 @@ if minetest.env:get_timeofday() >= 0.25 and minetest.env:get_timeofday() < 0.75 
 minetest.register_abm({
 	nodenames = { "air" },
 	neighbors = {"candles:hive_wild"},
-	interval = 20,
+	interval = 200,
 	chance = 10,
 	action = function(pos, node, active_object_count, active_object_count_wider)
 if minetest.env:get_timeofday() >= 0.25 and minetest.env:get_timeofday() < 0.75 then
@@ -378,6 +417,44 @@ minetest.register_abm({
 		minetest.env:add_node(pos,{name="candles:hive_wild", param2 = 0})
 	end
 })
+
+--seasonal calculation code by Gael de Sailly from the Forest mod
+minetest.register_abm({
+	nodenames = {"candles:hive_wild"},
+	interval = 20,
+	chance = 3,
+	action = function(pos)
+        local season = math.floor(math.mod(minetest.get_gametime() + 600 - minetest.get_timeofday() * 1200, 14400) / 1200)
+        if season < 2 or season > 9 then
+                minetest.remove_node(pos, {name = "candles:hive_wild"})
+		end
+	end,
+})
+
+minetest.register_abm({
+	nodenames = {"candles:hive", "candles:hive_empty"},
+	interval = 20,
+	chance = 3,
+	action = function(pos)
+        local season = math.floor(math.mod(minetest.get_gametime() + 600 - minetest.get_timeofday() * 1200, 14400) / 1200)
+        if season < 2 or season > 9 then
+                minetest.set_node(pos, {name = "candles:hive_dormant"})
+		end
+	end,
+})
+
+minetest.register_abm({
+	nodenames = {"candles:hive_dormant"},
+	interval = 20,
+	chance = 3,
+	action = function(pos)
+        local season = math.floor(math.mod(minetest.get_gametime() + 600 - minetest.get_timeofday() * 1200, 14400) / 1200)
+        if season > 2 or season < 9 then
+                minetest.set_node(pos, {name = "candles:hive_empty"})
+		end
+	end,
+})
+
 ----------------
 -- Craft Items
 ----------------
